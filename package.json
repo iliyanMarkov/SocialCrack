@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/iliyanMarkov/SocialCrack/issues"
   },
-  "homepage": "https://github.com/iliyanMarkov/SocialCrack#readme"
+  "homepage": "https://github.com/iliyanMarkov/SocialCrack#readme",
+  "dependencies": {
+    "apollo-server": "^2.19.1",
+    "graphql": "^15.4.0",
+    "mongoose": "^5.11.10"
+  }
 }
