@@ -4,6 +4,7 @@
   "description": "A simple social media app.",
   "main": "index.js",
   "scripts": {
+    "serve": "node index",
     "start": "nodemon index"
   },
   "repository": {
