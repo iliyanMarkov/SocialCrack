@@ -1,19 +1,35 @@
-import React, { useContext } from 'react'
-import { useQuery } from '@apollo/react-hooks'
-import { Grid, Image, Dimmer, Loader, Card, Button, Icon, Label } from 'semantic-ui-react'
+import React, { useContext, useState, useRef } from 'react'
+import { useMutation, useQuery } from '@apollo/react-hooks'
+import { Grid, Image, Dimmer, Loader, Card, Button, Icon, Label, Form } from 'semantic-ui-react'
+import gql from 'graphql-tag'
 import moment from 'moment'
 
 import { AuthContext } from '../context/auth'
 import LikeButton from '../components/LikeButton'
 import DeleteButton from '../components/DeleteButton'
-import { FETCH_POST_QUERY } from '../util/graphql'
+import { FETCH_POST_QUERY, SUBMIT_COMMENT_MUTATION } from '../util/graphql'
 
 function  SinglePost(props){
     const postId = props.match.params.postId
     const { user } = useContext(AuthContext)
+    const commentInputRef = useRef(null)
+
+    const [ comment, setComment ] = useState('')
+
     const { loading, error, data } = useQuery(FETCH_POST_QUERY, {
         variables: {
             postId
+        }
+    })
+
+    const [ submitComment ] = useMutation(SUBMIT_COMMENT_MUTATION, {
+        update() {
+            setComment('')
+            commentInputRef.current.blur()
+        },
+        variables: {
+            postId,
+            body: comment
         }
     })
 
@@ -71,6 +87,44 @@ function  SinglePost(props){
                                 <DeleteButton postId={id} callback={deletePostCallback}/>
                             )}
                         </Card.Content>
+                            {user &&
+                                <Card fluid>
+                                    <Card.Content>
+                                        <p>Post a comment</p>
+                                        <Form>
+                                            <div className='ui action input fluid'>
+                                                <input 
+                                                    type='text'
+                                                    placeholder='Comment..'
+                                                    name='comment'
+                                                    value={comment}
+                                                    onChange={event => setComment(event.target.value)}
+                                                    ref={commentInputRef}
+                                                />
+                                                <button type='submit'
+                                                    className='ui button teal'
+                                                    disabled={comment.trim() === ''}
+                                                    onClick={submitComment}
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        </Form>
+                                    </Card.Content>
+                                </Card>
+                            }
+                            {comments.map(comment => (
+                                <Card fluid key={comment.id}>
+                                    <Card.Content>
+                                        {user && user.username === comment.username && (
+                                            <DeleteButton postId={id} commentId={comment.id}/>
+                                        )}
+                                        <Card.Header>{comment.username}</Card.Header>
+                                        <Card.Meta>{moment(comment.createdAt).fromNow()}</Card.Meta>
+                                        <Card.Description>{comment.body}</Card.Description>
+                                    </Card.Content>
+                                </Card>
+                            ))}
                     </Grid.Column>    
                 </Grid.Row>
             </Grid>
