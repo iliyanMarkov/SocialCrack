@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/iliyanMarkov/SocialCrack/issues"
   },
-  "homepage": "https://github.com/iliyanMarkov/SocialCrack#readme",
+  "homepage": "https://iliyanmarkov.github.io/SocialCrack/",
   "dependencies": {
     "apollo-server": "^2.19.1",
     "bcryptjs": "^2.4.3",
